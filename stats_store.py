@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS cache_call_log (
 );
 CREATE INDEX IF NOT EXISTS idx_cache_call_log_ts ON cache_call_log(ts);
 CREATE INDEX IF NOT EXISTS idx_cache_call_log_model ON cache_call_log(model);
+CREATE INDEX IF NOT EXISTS idx_cache_call_log_session ON cache_call_log(session_id);
 """
 
 _NEW_COLUMNS = ["sys_prompt_hash", "history_hash", "ctx_msg_count",
@@ -63,6 +64,9 @@ class CacheStatsStore:
             if self._conn is None:
                 self.db_path.parent.mkdir(parents=True, exist_ok=True)
                 conn = await aiosqlite.connect(str(self.db_path))
+                # auto_vacuum=FULL：DELETE 时自动回收空闲页，防止长期 _trim 留存清理
+                # 产生的碎片让 db 文件膨胀。仅对空库生效；老库需删后重建才会启用。
+                await conn.execute("PRAGMA auto_vacuum=FULL")
                 await conn.executescript(_CREATE_SQL)
                 await conn.commit()
                 await self._migrate(conn)
