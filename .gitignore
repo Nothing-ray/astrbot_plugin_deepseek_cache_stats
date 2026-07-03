@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 插件运行时数据（绝不入库）
+*.db
+*.db-journal
+plugin_data/
+/data/
+
+# 开发文件（本地保留，不入库）
+/tests/
+/docs/
+/AGENTS.md
+
+# 敏感配置防御（含 API key 等，绝不入库）
+cmd_config.json
+*_config.json
+.env

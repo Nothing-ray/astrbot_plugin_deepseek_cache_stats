@@ -1,0 +1,64 @@
+{
+  "enabled": {
+    "description": "启用缓存统计记录",
+    "type": "bool",
+    "default": true,
+    "hint": "关闭后插件将完全不记录调用数据（透明运行）"
+  },
+  "log_each_call": {
+    "description": "逐次调用日志",
+    "type": "bool",
+    "default": true,
+    "hint": "每次 LLM 调用后在日志输出一行缓存命中摘要"
+  },
+  "log_level": {
+    "description": "逐次调用日志级别",
+    "type": "string",
+    "default": "info",
+    "options": ["debug", "info", "warning"],
+    "hint": "逐次调用日志使用的级别"
+  },
+  "store_snippet": {
+    "description": "记录提示词摘要",
+    "type": "bool",
+    "default": false,
+    "hint": "开启后额外存储 system prompt 与用户 prompt 的前 N 个字符，便于人眼辨认调用来源（隐私敏感，默认关闭）"
+  },
+  "snippet_len": {
+    "description": "摘要截断长度",
+    "type": "int",
+    "default": 80,
+    "hint": "store_snippet 开启时，每段摘要保留的字符数"
+  },
+  "low_hit_threshold": {
+    "description": "低命中阈值",
+    "type": "float",
+    "default": 0.5,
+    "hint": "命中率低于此值视为低命中，用于 /cs miss 默认过滤与自动告警日志。设为 0 可关闭自动告警",
+    "slider": {"min": 0, "max": 1, "step": 0.1}
+  },
+  "retention_days": {
+    "description": "留存天数",
+    "type": "int",
+    "default": 30,
+    "hint": "仅保留最近 N 天的记录，0 表示永久保留"
+  },
+  "retention_max_rows": {
+    "description": "最大记录条数",
+    "type": "int",
+    "default": 0,
+    "hint": "仅保留最近 N 条记录，0 表示不限"
+  },
+  "model_filter": {
+    "description": "model 过滤",
+    "type": "list",
+    "default": [],
+    "hint": "为空则记录所有 model；填写 model 名列表则只记录这些 model"
+  },
+  "schema_version": {
+    "description": "schema 版本",
+    "type": "int",
+    "default": 1,
+    "invisible": true
+  }
+}
