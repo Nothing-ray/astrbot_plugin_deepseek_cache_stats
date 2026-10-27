@@ -17,10 +17,21 @@ def _h(s: str) -> str:
 
 
 def _ser(contexts: Any) -> str:
-    """稳定序列化 contexts 列表（排序键），保证相同内容相同顺序得到相同串。"""
+    """稳定序列化 contexts 列表（排序键），保证相同内容相同顺序得到相同串。
+
+    AstrBot v4.29 起 contexts 可能含 pydantic Message 对象（非纯 dict），
+    default=repr 兜底：repr 由字段值决定，内容相同则串相同，且绝不抛异常。
+    """
     if not contexts:
         return ""
-    return json.dumps(contexts, sort_keys=True, ensure_ascii=False)
+    return json.dumps(contexts, sort_keys=True, ensure_ascii=False, default=repr)
+
+
+def _msg_field(m: Any, key: str) -> Any:
+    """兼容 dict 与对象两种消息形态读取字段。"""
+    if isinstance(m, dict):
+        return m.get(key)
+    return getattr(m, key, None)
 
 
 def _extract_system(system_prompt: Any, contexts: Any) -> str:
@@ -29,13 +40,14 @@ def _extract_system(system_prompt: Any, contexts: Any) -> str:
     AstrBot 的 tool_loop_agent_runner 把 system prompt 作为 messages[0](role=system)
     放进 contexts，而非通过 text_chat 的 system_prompt 参数传递，故需从 contexts 补取，
     否则 sys_prompt_hash 恒为空串哈希（da39a3ee），无法检测系统提示词漂移。
+    v4.29 起 contexts 元素可能是 Message 对象而非 dict，需兼容属性访问。
     """
     if system_prompt:
         return system_prompt
     if isinstance(contexts, list):
         for m in contexts:
-            if isinstance(m, dict) and m.get("role") == "system":
-                content = m.get("content")
+            if _msg_field(m, "role") == "system":
+                content = _msg_field(m, "content")
                 if content:
                     return str(content)
     return ""

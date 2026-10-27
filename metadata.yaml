@@ -1,7 +1,7 @@
 name: astrbot_plugin_deepseek_cache_stats
 desc: 统计 DeepSeek 上下文缓存命中率。以自定义 Provider 子类逐次记录每次调用的 prompt_cache_hit/miss/creation_tokens，提供 /cache_stats 命令查询命中率、按模型聚合与近期明细，便于分析与排查缓存失效。使用时将 DeepSeek 提供商的 type 改为 deepseek_cache_stats。
 help: "指令组 /cache_stats (别名 /cs /缓存统计)，无子指令时打印帮助树。子指令: /cs summary [窗] 总览; /cs recent [n] [窗] 最近明细; /cs model [窗] 按模型聚合; /cs miss [阈值%] [窗] 低命中侦探; /cs session [id] 会话调用序列(无 id 列近期会话); /cs trend [hour|day] [窗] 时间趋势; /cs reset 清空。时间窗语法: 1h/2d/today/YYYY-MM-DD。接入: 把 DeepSeek 提供商的 type 改为 deepseek_cache_stats。"
-version: 0.2.0
+version: 0.2.1
 author: Nothing-ray
 repo: "https://github.com/Nothing-ray/astrbot_plugin_deepseek_cache_stats"
 astrbot_version: ">=4.26.3,<5"

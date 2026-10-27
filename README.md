@@ -164,6 +164,7 @@ DeepSeek 按**最长公共前缀**缓存 token。每次调用记录两个指纹�
 
 **Q：`sys_prompt_hash` 全是 `da39a3ee`？**
 那是空串的 sha1。v0.2.0 早期有 bug（未从 contexts 提取 system），**Fix D 已修**。升级到 ≥0.2.0 并重载插件即恢复；若仍如此，说明该会话确实没有系统提示词。
+  AstrBot ≥4.29 环境请升级到 ≥v0.2.1：v4.29 起 contexts 为 Message 对象（非 dict），旧版 `_extract_system` 无法提取。
 
 **Q：缓存总是不命中？**
 1) 确认可缓存前缀 ≥ 1024 token；2) 同会话内保持系统提示词与历史稳定；3) DeepSeek 缓存有时效，长间隔会被淘汰。
@@ -174,6 +175,8 @@ DeepSeek 按**最长公共前缀**缓存 token。每次调用记录两个指纹�
 ## 兼容性
 
 AstrBot `>= 4.26.3, < 5`
+
+- **v0.2.1**：兼容 AstrBot 4.29（contexts 为 pydantic Message 对象）——`_ser` 加 `default=repr` 修复 `Object of type Message is not JSON serializable`（该异常导致统计不落库），`_extract_system` 兼容属性访问
 
 ## License
 
